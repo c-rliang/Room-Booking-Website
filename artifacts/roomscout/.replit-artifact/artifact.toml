@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "RoomScout"
+description = "A frontend-only campus room explorer and simulated event planner with an interactive campus heatmap and locally saved room requests."
+version = "1.0.0"
+id = "artifacts/roomscout"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22909
+
+[services.development]
+run = "pnpm --filter @workspace/roomscout run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/roomscout", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/roomscout/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22909"
+BASE_PATH = "/"
