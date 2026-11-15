@@ -13,8 +13,15 @@ export type Room = {
   image_url: string | null;
 };
 
+export type RoomFilters = {
+  minCapacity: number;
+  requiredEquipment: string[];
+};
+
 type RoomHeatmapProps = {
   rooms: Room[];
+  filters: RoomFilters;
+  onFiltersChange: (filters: RoomFilters) => void;
   selectedRoomId: string | null;
   recommendedRoomIds?: string[];
   onSelectRoom: (roomId: string | null) => void;
@@ -54,6 +61,8 @@ function polygon(points: number[][]) {
 
 export default function RoomHeatmap({
   rooms,
+  filters,
+  onFiltersChange,
   selectedRoomId: selectedId,
   recommendedRoomIds = [],
   onSelectRoom: setSelectedId,
@@ -69,6 +78,17 @@ export default function RoomHeatmap({
     rooms.find((room) => room.id === selectedId)?.floor ?? browsedFloor;
   const visibleRooms = rooms.filter((room) => room.floor === floor);
   const selectedRoom = rooms.find((room) => room.id === selectedId);
+  const equipmentOptions = [...new Set(rooms.flatMap((room) => room.equipment))].sort();
+  const mismatchReasons = (room: Room): string[] => [
+    ...(room.capacity < filters.minCapacity
+      ? [`Seats ${room.capacity}; you need ${filters.minCapacity}.`]
+      : []),
+    ...filters.requiredEquipment
+      .filter((item) => !room.equipment.includes(item))
+      .map((item) => `Missing ${item}.`),
+  ];
+  const matchingRooms = visibleRooms.filter((room) => mismatchReasons(room).length === 0);
+  const selectedReasons = selectedRoom ? mismatchReasons(selectedRoom) : [];
   const columns = Math.max(1, visibleRooms.length);
   const rows = 1;
 
@@ -145,6 +165,69 @@ export default function RoomHeatmap({
           </div>
         </div>
 
+        <div className="border-b border-stone-200 bg-stone-50/70 p-5">
+          <div className="flex flex-wrap items-end gap-5">
+            <label className="block text-xs font-semibold text-stone-600">
+              Minimum seats
+              <input
+                type="number"
+                min="0"
+                max="5000"
+                value={filters.minCapacity || ""}
+                placeholder="Any"
+                onChange={(event) => {
+                  const value = event.target.valueAsNumber;
+                  onFiltersChange({
+                    ...filters,
+                    minCapacity: Number.isFinite(value)
+                      ? Math.max(0, Math.min(5000, Math.floor(value)))
+                      : 0,
+                  });
+                }}
+                className="mt-2 block w-28 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 focus-visible:outline-2 focus-visible:outline-red-800"
+              />
+            </label>
+            <fieldset className="min-w-0 flex-1">
+              <legend className="text-xs font-semibold text-stone-600">Required equipment</legend>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {equipmentOptions.map((item) => {
+                  const active = filters.requiredEquipment.includes(item);
+                  return (
+                    <button
+                      key={item}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => onFiltersChange({
+                        ...filters,
+                        requiredEquipment: active
+                          ? filters.requiredEquipment.filter((value) => value !== item)
+                          : [...filters.requiredEquipment, item],
+                      })}
+                      className={`rounded-full border px-3 py-2 text-sm capitalize focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800 ${active ? "border-red-800 bg-red-800 text-white" : "border-stone-300 bg-white text-stone-700 hover:border-red-800"
+                        }`}
+                    >
+                      {item}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
+            <button
+              type="button"
+              onClick={() => onFiltersChange({ minCapacity: 0, requiredEquipment: [] })}
+              className="rounded-lg px-3 py-2 text-sm font-medium text-red-800 hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-red-800"
+            >
+              Reset filters
+            </button>
+          </div>
+          <p role="status" className="mt-3 text-xs text-stone-600">
+            {matchingRooms.length} of {visibleRooms.length} rooms match on Floor {floor}.
+            {matchingRooms.length === 0
+              ? " Try another floor or relax your filters."
+              : " Faded rooms do not match; select one to see why."}
+          </p>
+        </div>
+
         <div className="flex items-center justify-end gap-3 px-5 pt-5 text-xs text-stone-600">
           <span>Less requested</span>
           <div
@@ -161,7 +244,7 @@ export default function RoomHeatmap({
         <svg
           viewBox={viewBox}
           preserveAspectRatio="xMidYMid meet"
-          className="block h-[400px] w-full sm:h-[460px]"
+          className="block h-[260px] w-full sm:h-[340px]"
           role="group"
           aria-label={`Simplified room layout for floor ${floor}`}
         >
@@ -196,6 +279,8 @@ export default function RoomHeatmap({
             );
 
             const selected = selectedId === room.id;
+            const reasons = mismatchReasons(room);
+            const matches = reasons.length === 0;
             const recommended = recommendedRoomIds.includes(room.id);
             const color = demandColor(room.requests_last_30_days);
             const label = room.name.match(/\d+[A-Za-z]?$/)?.[0] ?? room.name;
@@ -207,6 +292,7 @@ export default function RoomHeatmap({
                 tabIndex={0}
                 aria-label={`${room.name}, capacity ${room.capacity}, ${room.requests_last_30_days} simulated requests`}
                 aria-pressed={selected}
+                opacity={matches ? 1 : 0.28}
                 onClick={() => setSelectedId(room.id)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
@@ -216,7 +302,7 @@ export default function RoomHeatmap({
                 }}
                 className="cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500"
               >
-                <title>{room.name}</title>
+                <title>{room.name}{reasons.length > 0 ? ` — ${reasons.join(" ")}` : " — matches your filters"}</title>
 
                 {/* Room side walls */}
                 <polygon
@@ -280,65 +366,70 @@ export default function RoomHeatmap({
 
         <div
           aria-live="polite"
-          className="min-h-28 border-t border-stone-200 bg-stone-50 p-5"
+          className="border-t border-stone-200 bg-stone-50 p-5"
         >
           {selectedRoom ? (
-            <div>
-              <div className="flex flex-wrap items-start justify-between gap-4">
+            <>
+              <div className="grid gap-5 md:grid-cols-[1.1fr_1fr_1fr]">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">
-                    Selected room
-                  </p>
-
-                  <h3 className="mt-1 text-xl font-semibold">
-                    {selectedRoom.name}
-                  </h3>
-                </div>
-
-                <div className="rounded-lg border border-stone-200 bg-white px-4 py-2 text-center">
-                  <p className="text-xl font-bold">{selectedRoom.capacity}</p>
-                  <p className="text-xs text-stone-500">seats</p>
-                </div>
-              </div>
-
-              <p className="mt-2 text-sm text-stone-500">
-                Floor {selectedRoom.floor}
-              </p>
-
-              <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-stone-500">
-                Equipment
-              </p>
-
-              <ul className="mt-2 flex flex-wrap gap-2">
-                {selectedRoom.equipment.map((item) => (
-                  <li
-                    key={item}
-                    className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-sm capitalize"
+                  <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Selected room</p>
+                  <h3 className="mt-1 text-lg font-semibold">{selectedRoom.name}</h3>
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs text-stone-600">
+                    <span className="rounded-md border border-stone-200 bg-white px-2 py-1">Floor {selectedRoom.floor}</span>
+                    <span className="rounded-md border border-stone-200 bg-white px-2 py-1">{selectedRoom.capacity} seats</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFloor(selectedRoom.floor);
+                      setSelectedId(null);
+                    }}
+                    className="mt-3 rounded text-xs font-medium text-red-800 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-red-800"
                   >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-
-              {selectedRoom.equipment.length === 0 && (
-                <p className="mt-2 text-sm text-stone-500">
-                  Equipment not listed.
-                </p>
-              )}
-
-              <div className="mt-5 border-t border-stone-200 pt-4">
-                <p className="text-sm text-stone-600">
-                  <span className="font-semibold text-stone-900">
-                    {selectedRoom.requests_last_30_days}
-                  </span>{" "}
-                  simulated requests in the last 30 days
-                </p>
+                    Clear selection
+                  </button>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Equipment</p>
+                  <ul className="mt-2 flex flex-wrap gap-2">
+                    {selectedRoom.equipment.map((item) => (
+                      <li key={item} className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs capitalize">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  {selectedRoom.equipment.length === 0 && <p className="mt-2 text-sm text-stone-500">Not listed.</p>}
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Simulated demand</p>
+                  <p className="mt-1 text-2xl font-semibold">{selectedRoom.requests_last_30_days}<span className="ml-2 text-xs font-normal text-stone-500">requests / 30 days</span></p>
+                  <div
+                    className="mt-2 h-2 overflow-hidden rounded-full bg-stone-200"
+                    role="img"
+                    aria-label={`${selectedRoom.requests_last_30_days} simulated requests, on a scale from 0 to 70 or more`}
+                  >
+                    <div
+                      className="h-full rounded-full border border-stone-300"
+                      style={{
+                        width: `${Math.max(2, Math.min(100, selectedRoom.requests_last_30_days / 70 * 100))}%`,
+                        backgroundColor: demandColor(selectedRoom.requests_last_30_days),
+                      }}
+                    />
+                  </div>
+                  <p className="mt-2 text-xs text-stone-500">Historical demo count, not live availability.</p>
+                </div>
               </div>
-            </div>
+              {selectedReasons.length > 0 && (
+                <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                  Does not match your filters: {selectedReasons.join(" ")}
+                </div>
+              )}
+            </>
           ) : (
-            <p className="text-sm text-stone-500">
-              Select a numbered room to see its capacity and equipment.
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-medium text-stone-700">Explore Floor {floor}</p>
+              <p className="text-sm text-stone-500">Select a room to compare seats, equipment, and demand.</p>
+            </div>
           )}
         </div>
       </section>
