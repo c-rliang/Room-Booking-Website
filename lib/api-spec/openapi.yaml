@@ -1,0 +1,222 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+paths:
+  /rooms:
+    get:
+      operationId: getRooms
+      responses:
+        "200":
+          description: Synthetic shared room catalog
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomCatalog"
+        "503":
+          $ref: "#/components/responses/ServiceError"
+  /chat:
+    post:
+      operationId: sendChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationInput"
+      responses:
+        "200":
+          description: Assistant answer and deterministic tool results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatReply"
+        "400":
+          $ref: "#/components/responses/ServiceError"
+        "413":
+          $ref: "#/components/responses/ServiceError"
+        "429":
+          $ref: "#/components/responses/ServiceError"
+        "502":
+          $ref: "#/components/responses/ServiceError"
+        "503":
+          $ref: "#/components/responses/ServiceError"
+        "504":
+          $ref: "#/components/responses/ServiceError"
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+components:
+  responses:
+    ServiceError:
+      description: Safe recoverable error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ServiceError"
+  schemas:
+    ServiceError:
+      type: object
+      required: [code, error]
+      properties:
+        code: { type: string }
+        error: { type: string }
+    ConversationInput:
+      type: object
+      additionalProperties: false
+      required: [messages]
+      properties:
+        messages:
+          type: array
+          minItems: 1
+          maxItems: 30
+          items:
+            $ref: "#/components/schemas/ConversationMessage"
+    ConversationMessage:
+      type: object
+      additionalProperties: false
+      required: [role, content]
+      properties:
+        role: { type: string, enum: [user, assistant] }
+        content: { type: string, minLength: 1, maxLength: 2000 }
+    Room:
+      type: object
+      required: [id, building_id, name, floor, capacity, equipment, requests_last_30_days, popularity, popularity_label, image_url]
+      properties:
+        id: { type: string }
+        building_id: { type: string }
+        name: { type: string }
+        floor: { type: integer }
+        capacity: { type: integer, minimum: 1 }
+        equipment: { type: array, items: { type: string } }
+        requests_last_30_days: { type: integer, minimum: 0 }
+        popularity: { type: number, minimum: 0, maximum: 1 }
+        popularity_label: { type: string, enum: [Low, Medium, High] }
+        image_url: { type: [string, "null"] }
+    RoomCatalog:
+      type: object
+      required: [synthetic, description, popularity_full, rooms]
+      properties:
+        synthetic: { type: boolean }
+        description: { type: string }
+        popularity_full: { type: integer }
+        rooms:
+          type: array
+          items: { $ref: "#/components/schemas/Room" }
+    RoomRecommendations:
+      type: object
+      required: [recommended, matched, note]
+      properties:
+        recommended:
+          type: array
+          items: { $ref: "#/components/schemas/Room" }
+        popular_rooms_that_also_fit:
+          type: array
+          items: { $ref: "#/components/schemas/Room" }
+        matched: { type: integer }
+        note: { type: string }
+        no_match: { type: string }
+    PlanOption:
+      type: object
+      required: [date, start_time, end_time]
+      properties:
+        date: { type: string }
+        start_time: { type: string }
+        end_time: { type: string }
+      additionalProperties: true
+    PlanningStep:
+      type: object
+      required: [id, title, url, due]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        url: { type: string }
+        due: { type: string }
+        after: { type: string }
+        tip: { type: string }
+        prepare: { type: array, items: { type: string } }
+      additionalProperties: true
+    PlanningResult:
+      type: object
+      required: [best_option, steps, warnings, sources]
+      properties:
+        today: { type: string }
+        options:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        classroom_blockers:
+          type: array
+          items:
+            type: object
+            required: [rule, message, options]
+            properties:
+              rule: { type: string }
+              message: { type: string }
+              options: { type: array, items: { type: string } }
+        permit:
+          type: object
+          additionalProperties: true
+        classroom_form_answers:
+          type: object
+          additionalProperties: true
+        required_statements:
+          type: object
+          additionalProperties: true
+        permit_definitions: { type: string }
+        help: { type: string }
+        data_note: { type: string }
+        best_option:
+          anyOf:
+            - $ref: "#/components/schemas/PlanOption"
+            - type: "null"
+        steps:
+          type: array
+          items: { $ref: "#/components/schemas/PlanningStep" }
+        warnings: { type: array, items: { type: string } }
+        sources: { type: array, items: { type: string } }
+      additionalProperties: true
+    ChatReply:
+      type: object
+      required: [reply, plan, rooms, event]
+      properties:
+        reply: { type: string, minLength: 1, maxLength: 12000 }
+        plan:
+          anyOf:
+            - $ref: "#/components/schemas/PlanningResult"
+            - type: "null"
+        rooms:
+          anyOf:
+            - $ref: "#/components/schemas/RoomRecommendations"
+            - type: "null"
+        event:
+          description: Validated planning input captured from plan_event, never guessed by the UI
+          type: [object, "null"]
+          additionalProperties: true
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+

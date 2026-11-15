@@ -1,0 +1,1 @@
+- [OpenAPI response preservation](openapi-response-preservation.md) — explicit optional fields prevent generated validation from dropping policy details.

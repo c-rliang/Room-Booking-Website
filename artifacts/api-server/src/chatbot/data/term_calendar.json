@@ -1,0 +1,82 @@
+{
+  "_note": "Term dates from the official USC academic calendar (https://www.usc.edu/academic-calendar/, checked 2026-11-14). form_opens dates are SAMPLE: confirm with Campus Activities.",
+  "terms": [
+    {
+      "id": "fall-2026",
+      "name": "Fall 2026",
+      "first_day": "2026-08-24",
+      "week4_start": "2026-09-14",
+      "last_instructional_day": "2026-12-04",
+      "finals_end": "2026-12-16",
+      "form_opens": "2026-08-10",
+      "blackouts": [
+        {
+          "start": "2026-09-07",
+          "end": "2026-09-07",
+          "name": "Labor Day (university holiday)"
+        },
+        {
+          "start": "2026-10-08",
+          "end": "2026-10-09",
+          "name": "Fall recess"
+        },
+        {
+          "start": "2026-11-11",
+          "end": "2026-11-11",
+          "name": "Veterans Day (university holiday)"
+        },
+        {
+          "start": "2026-11-25",
+          "end": "2026-11-29",
+          "name": "Thanksgiving holiday"
+        },
+        {
+          "start": "2026-12-05",
+          "end": "2026-12-08",
+          "name": "Study Days"
+        },
+        {
+          "start": "2026-12-09",
+          "end": "2026-12-16",
+          "name": "Final Exams"
+        }
+      ]
+    },
+    {
+      "id": "spring-2027",
+      "name": "Spring 2027",
+      "first_day": "2027-01-11",
+      "week4_start": "2027-02-01",
+      "last_instructional_day": "2027-04-30",
+      "finals_end": "2027-05-12",
+      "form_opens": "2026-12-07",
+      "blackouts": [
+        {
+          "start": "2027-01-18",
+          "end": "2027-01-18",
+          "name": "Martin Luther King Jr. Day (university holiday)"
+        },
+        {
+          "start": "2027-02-15",
+          "end": "2027-02-15",
+          "name": "President's Day (university holiday)"
+        },
+        {
+          "start": "2027-03-14",
+          "end": "2027-03-21",
+          "name": "Spring recess"
+        },
+        {
+          "start": "2027-05-01",
+          "end": "2027-05-04",
+          "name": "Study Days"
+        },
+        {
+          "start": "2027-05-05",
+          "end": "2027-05-12",
+          "name": "Final Exams"
+        }
+      ]
+    }
+  ]
+}
