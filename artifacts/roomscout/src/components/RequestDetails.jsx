@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { getRoom, getBuilding } from '../data/mockRooms.js';
+import { resolveRequestRoom, getBuilding, getActiveRoom } from '../data/mockRooms.js';
 import { StatusBadge, fmtDate } from './MyRequests.jsx';
 import ClassroomArt from './ClassroomArt.jsx';
 import { IconChevron, IconDoc, IconPin } from './Icons.jsx';
@@ -14,14 +14,14 @@ export default function RequestDetails({ request, onBack, onShowRoom }) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
-  const room = getRoom(request.roomId);
+  const room = resolveRequestRoom(request);
   const rows = [
     ['Request ID', request.id],
     ['Event date', fmtDate(request.eventDate)],
     ['Time', request.eventTime],
     ['Attendance', `${request.attendance} people`],
     ['Food served', request.food ? 'Yes' : 'No'],
-    ['Submitted', new Date(request.submittedAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })],
+    ['Saved', fmtDate(request.submittedAt)],
   ];
   return (
     <div className="req-detail" role="region" aria-label="Request details" data-testid="panel-request-details">
@@ -42,11 +42,13 @@ export default function RequestDetails({ request, onBack, onShowRoom }) {
         {rows.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
       </dl>
       <p className="block-title">Forms attached</p>
+      <p className="disclaimer">This is a local demo record, not a university booking or form submission. Listed forms are a checklist only.</p>
       <ul className="forms">
         {(request.forms || []).map((f) => <li key={f}><IconDoc width="16" height="16" /><span><strong>{f}</strong></span></li>)}
       </ul>
       {request.notes && <p className={'note-box' + (request.status === 'Needs Action' ? ' warn' : '')}>{request.notes}</p>}
-      <button className="btn btn-ghost btn-block" onClick={() => onShowRoom(request.roomId)} data-testid="button-show-on-map"><IconPin width="16" height="16" />Show room on map</button>
+      {!getActiveRoom(request.roomId) && <p className="note-box">This room belongs to an older catalog or saved snapshot. Its original ID is preserved; it is not a current recommendation.</p>}
+      <button className="btn btn-ghost btn-block" onClick={() => onShowRoom(request.roomId)} data-testid="button-show-on-map"><IconPin width="16" height="16" />{getActiveRoom(request.roomId) ? 'Show room on map' : 'Show saved room identity'}</button>
     </div>
   );
 }

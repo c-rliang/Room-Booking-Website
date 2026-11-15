@@ -1,47 +1,35 @@
 # RoomScout
 
-A campus room explorer with a simulated event-planning assistant and locally saved room requests.
+Campus room explorer and event-planning assistant. Rooms and request-demand counts are synthetic. Saved requests are browser-local demo records, never official bookings.
 
-## Run & Operate
+## Run and verify
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- RoomScout: managed workflow `artifacts/roomscout: web`
+- API: managed workflow `artifacts/api-server: API Server`
+- `pnpm test` — teammate deterministic rules/provider tests and integration contracts (mocked providers, no credentials)
+- `pnpm run typecheck` — workspace TypeScript checks (RoomScout application stays JavaScript)
+- `pnpm --filter @workspace/api-spec run codegen` — regenerate clients and validation after changing the OpenAPI spec
+- RoomScout build needs workflow-provided `PORT` and `BASE_PATH`; API build: `pnpm --filter @workspace/api-server run build`
 
-## Stack
+## Scope and standing constraints
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Keep RoomScout in React **JavaScript and plain CSS**. Do not replace it with the teammates' Next.js app or migrate it to TypeScript/Tailwind.
+- **Approved exception:** the teammate chatbot may use live AI through the existing API Server. The former no-backend/no-live-AI restriction is superseded for this integration only.
+- No authentication, database, real reservations, official form submission, or production deployment is part of this work. The template's unused database package does not mean RoomScout uses a database.
+- Explore Rooms stays visible when switching between Plan Event and My Requests.
+- Requests remain in `roomscout.requests.v1` localStorage. Never remap old room IDs to new IDs. Preserve legacy lookup/snapshots without including old rooms in new recommendations.
+- Keep map and chat adapters replaceable. Retain teammate policy rules, source links and caveats. Do not claim synthetic rooms are verified USC rooms, demand is availability, or requests were sent.
 
-## Where things live
+## Integration pointers
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `docs/teammate/PROVENANCE.md` — sources, exact revisions, import/update procedure, intentional integration corrections and verification
+- `artifacts/roomscout/README.md` — provider setup and integration contracts
+- `lib/room-catalog/rooms.json` — teammate-owned GFS sample catalog; `index.js` owns normalization and popularity scale
+- `lib/api-spec/openapi.yaml` — API contract
+- `artifacts/api-server/src/chatbot/` — server-only imported chatbot engine and tests; JSON data bundled into the API, no runtime filesystem paths or GitHub polling
 
-## Architecture decisions
+## Credentials and operation
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+Use workspace Secrets for `GEMINI_API_KEY` (default) or `ANTHROPIC_API_KEY`. Never expose keys through frontend environment variables, source, logs or chat. Original teammate options `LLM_PROVIDER`, `GEMINI_MODEL`, `ANTHROPIC_MODEL` remain server-side; no provider picker. See the README for model defaults and aliases.
 
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
-
-## User preferences
-
-- RoomScout must remain frontend-only: React with JavaScript and plain CSS, with localStorage for persistence. No TypeScript application code, Tailwind, authentication, database, backend, or live AI API.
-- Explore Rooms must always remain visible when switching between Plan Event and My Requests.
-- Keep the mock heatmap and simulated chatbot replaceable through clearly documented adapters so teammates can integrate their implementations later.
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+No key is required to browse rooms or read local requests. Missing credentials produce a recoverable chat setup message. Requests use the shared same-origin `/api` routing, never hard-coded localhost URLs or a second chatbot server.

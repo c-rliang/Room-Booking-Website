@@ -9,6 +9,7 @@
     "serve": "vite preview --config vite.config.js --host 0.0.0.0"
   },
   "devDependencies": {
+    "@workspace/room-catalog": "workspace:*",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.4",
     "@radix-ui/react-alert-dialog": "^1.1.7",

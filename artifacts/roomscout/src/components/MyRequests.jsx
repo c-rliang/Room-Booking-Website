@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import RequestDetails from './RequestDetails.jsx';
-import { getRoom, getBuilding } from '../data/mockRooms.js';
+import { resolveRequestRoom, getBuilding } from '../data/mockRooms.js';
 import { IconDoc, IconCalendar, IconUsers } from './Icons.jsx';
 
 const STATUSES = ['All', 'Submitted', 'Confirmed', 'Needs Action'];
 
 export function StatusBadge({ status }) {
   const cls = status === 'Confirmed' ? 'ok' : status === 'Needs Action' ? 'warn' : 'info';
-  return <span className={'badge badge-' + cls} data-testid="status-request">{status}</span>;
+  return <span className={'badge badge-' + cls} data-testid="status-request">{status} · demo</span>;
 }
 
-export const fmtDate = (d) => new Date(d.length === 10 ? d + 'T12:00:00' : d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+export const fmtDate = (d) => {
+  if (typeof d !== 'string' || !d) return 'Date not saved';
+  const date = new Date(d.length === 10 ? d + 'T12:00:00' : d);
+  return Number.isNaN(date.getTime()) ? 'Date not saved' : date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+};
 
 export default function MyRequests({ requests, onShowRoom, onPlan }) {
   const [filter, setFilter] = useState('All');
@@ -48,13 +52,13 @@ export default function MyRequests({ requests, onShowRoom, onPlan }) {
             {filter !== 'All' ? <button className="btn btn-ghost" onClick={() => setFilter('All')}>Show all</button> : <button className="btn btn-primary" onClick={onPlan}>Plan an event</button>}
           </div>
         ) : shown.map((r) => {
-          const room = getRoom(r.roomId);
+          const room = resolveRequestRoom(r);
           return (
             <article key={r.id} className={'req-card' + (r.isNew ? ' is-new' : '')} data-testid={`card-request-${r.id}`}>
               <div className="req-top">
                 <div>
                   <h3 className="req-name">{r.eventName}</h3>
-                  <p className="req-room">{room?.name} · {getBuilding(room?.buildingId)?.name}</p>
+                  <p className="req-room">{room.name} · {getBuilding(room.buildingId)?.name || 'Saved room identity'}{room.legacy ? ' · archived' : ''}</p>
                 </div>
                 <StatusBadge status={r.status} />
               </div>

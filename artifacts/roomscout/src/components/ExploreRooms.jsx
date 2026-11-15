@@ -2,10 +2,10 @@ import { forwardRef } from 'react';
 import HeatmapAdapter from '../integrations/HeatmapAdapter.jsx';
 import RoomFilters from './RoomFilters.jsx';
 import RoomDetails from './RoomDetails.jsx';
-import { getRoom, getBuilding, roomMatchesFilters, popularityColor } from '../data/mockRooms.js';
+import { getRoom, getBuilding, roomMatchesFilters, popularityColor, DEFAULT_FILTERS } from '../data/mockRooms.js';
 
 const ExploreRooms = forwardRef(function ExploreRooms(
-  { rooms, filters, onFiltersChange, selectedRoomId, highlightedRoomIds, chosenRoomId, onRoomSelect, onRoomClose, onChooseRoom },
+  { rooms, catalogState, onRetryCatalog, filters, onFiltersChange, selectedRoomId, highlightedRoomIds, chosenRoomId, onRoomSelect, onRoomClose, onChooseRoom },
   ref,
 ) {
   const selected = selectedRoomId ? getRoom(selectedRoomId) : null;
@@ -19,10 +19,12 @@ const ExploreRooms = forwardRef(function ExploreRooms(
           <p className="eyebrow">Explore Rooms</p>
           <h1 id="explore-title" className="page-title">Find the right room</h1>
         </div>
-        <p className="demo-flag">Demo data · fictional campus</p>
+        <p className="demo-flag">Synthetic rooms · not live availability</p>
       </div>
 
-      <RoomFilters filters={filters} onChange={onFiltersChange} matchCount={matching.length} total={rooms.length} />
+      <RoomFilters rooms={rooms} filters={filters} onChange={onFiltersChange} matchCount={matching.length} total={rooms.length} />
+      {catalogState === 'loading' && <p role="status" className="note-box">Loading sample room data…</p>}
+      {catalogState === 'error' && <p role="alert" className="note-box warn">Room data is unavailable. <button className="link-btn" onClick={onRetryCatalog}>Retry room data</button></p>}
 
       <div className="map-card">
         <HeatmapAdapter
@@ -32,6 +34,7 @@ const ExploreRooms = forwardRef(function ExploreRooms(
           highlightedRoomIds={highlightedRoomIds}
           onRoomSelect={onRoomSelect}
         />
+      </div>
         {selected && (
           <RoomDetails
             key={selected.id}
@@ -42,7 +45,7 @@ const ExploreRooms = forwardRef(function ExploreRooms(
             onClose={onRoomClose}
           />
         )}
-      </div>
+      {selectedRoomId && !selected && <p className="note-box">This saved room is not in the current catalog. Its original ID has been preserved.</p>}
 
       {recs.length > 0 && (
         <p className="rec-strip" aria-live="polite">
@@ -56,7 +59,7 @@ const ExploreRooms = forwardRef(function ExploreRooms(
           <div className="empty small">
             <p className="empty-title">No rooms match these filters</p>
             <p>Try lowering the minimum capacity or turning off a requirement.</p>
-            <button className="btn btn-ghost" onClick={() => onFiltersChange({ minCapacity: 0, projector: false, accessible: false, food: false })}>Clear filters</button>
+            <button className="btn btn-ghost" onClick={() => onFiltersChange(DEFAULT_FILTERS)}>Clear filters</button>
           </div>
         ) : (
           <ul className="room-list">
