@@ -1,0 +1,86 @@
+{
+  "synthetic": true,
+  "description": "Invented room identities, capacities, equipment, and demand for the hackathon demo. Not live availability or verified USC room information.",
+  "rooms": [
+    {
+      "id": "demo-gfs-101",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 101",
+      "floor": 1,
+      "capacity": 30,
+      "equipment": ["projector", "whiteboard"],
+      "requests_last_30_days": 42,
+      "image_url": null
+    },
+    {
+      "id": "demo-gfs-102",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 102",
+      "floor": 1,
+      "capacity": 20,
+      "equipment": ["whiteboard"],
+      "requests_last_30_days": 3,
+      "image_url": null
+    },
+    {
+      "id": "demo-gfs-103",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 103",
+      "floor": 1,
+      "capacity": 60,
+      "equipment": ["projector", "speakers", "microphone", "whiteboard"],
+      "requests_last_30_days": 70,
+      "image_url": null
+    },
+    {
+      "id": "demo-gfs-104",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 104",
+      "floor": 1,
+      "capacity": 30,
+      "equipment": ["projector", "whiteboard"],
+      "requests_last_30_days": 12,
+      "image_url": null
+    },
+    {
+      "id": "demo-gfs-201",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 201",
+      "floor": 2,
+      "capacity": 25,
+      "equipment": ["projector", "speakers"],
+      "requests_last_30_days": 23,
+      "image_url": null
+    },
+    {
+      "id": "demo-gfs-202",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 202",
+      "floor": 2,
+      "capacity": 40,
+      "equipment": ["projector", "speakers", "whiteboard"],
+      "requests_last_30_days": 47,
+      "image_url": null
+    },
+    {
+      "id": "demo-gfs-203",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 203",
+      "floor": 2,
+      "capacity": 40,
+      "equipment": ["projector", "speakers", "whiteboard"],
+      "requests_last_30_days": 8,
+      "image_url": null
+    },
+    {
+      "id": "demo-gfs-204",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 204",
+      "floor": 2,
+      "capacity": 50,
+      "equipment": ["projector", "speakers", "microphone"],
+      "requests_last_30_days": 60,
+      "image_url": null
+    }
+  ]
+}
