@@ -1,0 +1,57 @@
+{
+  "classroom_request": {
+    "title": "Classroom Space Request Form (Campus Activities)",
+    "url": "https://usccampusactivities.wufoo.com/forms/classroom-space-request-form/",
+    "note": "RSOs must submit classroom requests through this form; requests sent directly to Classroom Scheduling are not accepted."
+  },
+  "classroom_scheduling_wrong_channel": {
+    "title": "Classroom Scheduling (do NOT use for RSO requests)",
+    "url": "https://arr.usc.edu/classroom-scheduling/"
+  },
+  "event_permit": {
+    "title": "USC Events Permit Application",
+    "url": "https://usc-its.my.site.com/eventpermits/s/request-submission",
+    "note": "Not a request for space: reserve your venue first. Submitting routes your application to the relevant departments; follow up with each one using the contact list in your confirmation email. It is not an approval. Print a copy as proof of event registration."
+  },
+  "career_event": {
+    "title": "Career Center meeting room request (career-related events only)",
+    "url": "https://forms.monday.com/forms/c63d99b1d0ee56821d4d4a2faa1b9e89?r=use1",
+    "note": "Run by the USC Career Center. Meeting rooms during business hours only."
+  },
+  "trojan_events": {
+    "title": "Trojan Event Services venues (non-classroom spaces)",
+    "url": "https://trojanevents.usc.edu/venues/"
+  },
+  "event_planning_guide": {
+    "title": "USC Reserving Space / event planning guide",
+    "url": "https://calendar.usc.edu/event-planning"
+  },
+  "tes_faq": {
+    "title": "Trojan Event Services FAQ",
+    "url": "https://trojanevents.usc.edu/frequently-asked-questions/"
+  },
+  "rso_resources": {
+    "title": "Campus Activities RSO resources",
+    "url": "https://campusactivities.usc.edu/programs/recognized-student-organizations/rso-resources/"
+  },
+  "event_permit_dps": {
+    "title": "USC Event Permit via DPS (link shown on the classroom form)",
+    "url": "https://uscit.tfaforms.net/70/"
+  },
+  "tes_forms": {
+    "title": "Trojan Event Services forms and permits (filming, fundraising approval)",
+    "url": "https://trojanevents.usc.edu/forms-and-permits"
+  },
+  "political_policy": {
+    "title": "USC Political Site Visit and Events Policy",
+    "url": "https://policy.usc.edu/political-site-visit-policy/"
+  },
+  "room_finder": {
+    "title": "USC Room Finder (AV equipment per room)",
+    "url": "https://roomfinder.usc.edu/"
+  },
+  "trojan_accountability": {
+    "title": "Trojan Accountability Expectations (Career Center)",
+    "url": "https://careers.usc.edu/resources/trojan-accountability-expectations/"
+  }
+}

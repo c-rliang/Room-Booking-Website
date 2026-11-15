@@ -1,0 +1,257 @@
+{
+  "synthetic": true,
+  "description": "Invented room data in Amitesh's format. Buildings are from the weekday list on the Classroom Space Request Form; room numbers, seats and request counts are made up.",
+  "rooms": [
+    {
+      "id": "demo-gfs-101",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 101",
+      "floor": 1,
+      "capacity": 30,
+      "equipment": [
+        "projector",
+        "whiteboard"
+      ],
+      "requests_last_30_days": 42,
+      "image_url": null
+    },
+    {
+      "id": "demo-thh-101",
+      "building_id": "thh",
+      "name": "Demo THH Room 101",
+      "floor": 1,
+      "capacity": 180,
+      "equipment": [
+        "projector",
+        "microphone",
+        "document_camera"
+      ],
+      "requests_last_30_days": 43,
+      "image_url": null
+    },
+    {
+      "id": "demo-thh-116",
+      "building_id": "thh",
+      "name": "Demo THH Room 116",
+      "floor": 1,
+      "capacity": 40,
+      "equipment": [
+        "projector",
+        "whiteboard"
+      ],
+      "requests_last_30_days": 40,
+      "image_url": null
+    },
+    {
+      "id": "demo-thh-208",
+      "building_id": "thh",
+      "name": "Demo THH Room 208",
+      "floor": 2,
+      "capacity": 30,
+      "equipment": [
+        "whiteboard"
+      ],
+      "requests_last_30_days": 18,
+      "image_url": null
+    },
+    {
+      "id": "demo-thh-212",
+      "building_id": "thh",
+      "name": "Demo THH Room 212",
+      "floor": 2,
+      "capacity": 24,
+      "equipment": [
+        "projector",
+        "whiteboard",
+        "movable_seating"
+      ],
+      "requests_last_30_days": 10,
+      "image_url": null
+    },
+    {
+      "id": "demo-sos-100",
+      "building_id": "sos",
+      "name": "Demo SOS Room 100",
+      "floor": 1,
+      "capacity": 150,
+      "equipment": [
+        "projector",
+        "microphone"
+      ],
+      "requests_last_30_days": 41,
+      "image_url": null
+    },
+    {
+      "id": "demo-sos-152",
+      "building_id": "sos",
+      "name": "Demo SOS Room 152",
+      "floor": 1,
+      "capacity": 45,
+      "equipment": [
+        "projector",
+        "whiteboard"
+      ],
+      "requests_last_30_days": 36,
+      "image_url": null
+    },
+    {
+      "id": "demo-sos-210",
+      "building_id": "sos",
+      "name": "Demo SOS Room 210",
+      "floor": 2,
+      "capacity": 28,
+      "equipment": [
+        "projector",
+        "whiteboard",
+        "movable_seating"
+      ],
+      "requests_last_30_days": 8,
+      "image_url": null
+    },
+    {
+      "id": "demo-sgm-101",
+      "building_id": "sgm",
+      "name": "Demo SGM Room 101",
+      "floor": 1,
+      "capacity": 120,
+      "equipment": [
+        "projector",
+        "microphone",
+        "document_camera"
+      ],
+      "requests_last_30_days": 32,
+      "image_url": null
+    },
+    {
+      "id": "demo-sgm-226",
+      "building_id": "sgm",
+      "name": "Demo SGM Room 226",
+      "floor": 2,
+      "capacity": 35,
+      "equipment": [
+        "projector",
+        "whiteboard"
+      ],
+      "requests_last_30_days": 29,
+      "image_url": null
+    },
+    {
+      "id": "demo-sgm-601",
+      "building_id": "sgm",
+      "name": "Demo SGM Room 601",
+      "floor": 6,
+      "capacity": 22,
+      "equipment": [
+        "whiteboard"
+      ],
+      "requests_last_30_days": 4,
+      "image_url": null
+    },
+    {
+      "id": "demo-wph-102",
+      "building_id": "wph",
+      "name": "Demo WPH Room 102",
+      "floor": 1,
+      "capacity": 60,
+      "equipment": [
+        "projector",
+        "whiteboard",
+        "microphone"
+      ],
+      "requests_last_30_days": 26,
+      "image_url": null
+    },
+    {
+      "id": "demo-wph-207",
+      "building_id": "wph",
+      "name": "Demo WPH Room 207",
+      "floor": 2,
+      "capacity": 30,
+      "equipment": [
+        "projector",
+        "movable_seating"
+      ],
+      "requests_last_30_days": 12,
+      "image_url": null
+    },
+    {
+      "id": "demo-wph-b27",
+      "building_id": "wph",
+      "name": "Demo WPH Room B27",
+      "floor": 0,
+      "capacity": 25,
+      "equipment": [
+        "projector",
+        "whiteboard"
+      ],
+      "requests_last_30_days": 5,
+      "image_url": null
+    },
+    {
+      "id": "demo-gfs-106",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 106",
+      "floor": 1,
+      "capacity": 90,
+      "equipment": [
+        "projector",
+        "microphone"
+      ],
+      "requests_last_30_days": 37,
+      "image_url": null
+    },
+    {
+      "id": "demo-gfs-222",
+      "building_id": "gfs",
+      "name": "Demo GFS Room 222",
+      "floor": 2,
+      "capacity": 32,
+      "equipment": [
+        "projector",
+        "whiteboard",
+        "movable_seating"
+      ],
+      "requests_last_30_days": 16,
+      "image_url": null
+    },
+    {
+      "id": "demo-kap-140",
+      "building_id": "kap",
+      "name": "Demo KAP Room 140",
+      "floor": 1,
+      "capacity": 50,
+      "equipment": [
+        "projector",
+        "whiteboard"
+      ],
+      "requests_last_30_days": 21,
+      "image_url": null
+    },
+    {
+      "id": "demo-kap-156",
+      "building_id": "kap",
+      "name": "Demo KAP Room 156",
+      "floor": 1,
+      "capacity": 26,
+      "equipment": [
+        "projector",
+        "whiteboard"
+      ],
+      "requests_last_30_days": 7,
+      "image_url": null
+    },
+    {
+      "id": "demo-kap-165",
+      "building_id": "kap",
+      "name": "Demo KAP Room 165",
+      "floor": 1,
+      "capacity": 40,
+      "equipment": [
+        "whiteboard",
+        "movable_seating"
+      ],
+      "requests_last_30_days": 9,
+      "image_url": null
+    }
+  ]
+}

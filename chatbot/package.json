@@ -1,0 +1,12 @@
+{
+  "name": "rso-room-chatbot",
+  "version": "0.1.0",
+  "description": "Chatbot that helps USC RSOs figure out which forms, permits, deadlines and rooms they need for an event.",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  }
+}
